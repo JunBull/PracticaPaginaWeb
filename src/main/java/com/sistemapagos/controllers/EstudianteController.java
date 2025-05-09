@@ -3,12 +3,18 @@ package com.sistemapagos.controllers;
 import com.sistemapagos.entities.Estudiante;
 import com.sistemapagos.entities.Pago;
 import com.sistemapagos.enums.PagoStatus;
+import com.sistemapagos.enums.TypePago;
 import com.sistemapagos.repository.EstudianteRepository;
 import com.sistemapagos.repository.PagoRepository;
 import com.sistemapagos.services.PagoService;
+import org.hibernate.dialect.PgJdbcHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -59,5 +65,24 @@ public class EstudianteController {
         return pagoRepository.findByStatus(status);
     }
 
+    @GetMapping("/pagos/porTipo")
+    public List<Pago> listarPagoPorType(@RequestParam TypePago type){
+        return pagoRepository.findByType(type);
+    }
+
+    @PutMapping("/pagos/{pagoId}/actualizarPago")
+    public Pago actualizarStatusDePago(@RequestParam PagoStatus status,@PathVariable Long pagoId){
+        return pagoService.actualizarPagoPorStatus(status,pagoId);
+    }
+
+    @PostMapping(path = "/pagos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Pago guardarPago(@RequestParam("file") MultipartFile file, double cantidad, TypePago type, LocalDate date, String codigoEstudiante) throws IOException {
+        return pagoService.savePago(file, cantidad, type, date, codigoEstudiante);
+    }
+
+    @GetMapping(value = "/pagoFile/{pagoId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] listarArchivoPorId(@PathVariable Long pagoId) throws IOException {
+        return pagoService.getArchivoPorId(pagoId);
+    }
 
 }
