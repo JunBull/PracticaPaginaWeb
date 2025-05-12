@@ -10,6 +10,8 @@ import com.sistemapagos.services.PagoService;
 import org.hibernate.dialect.PgJdbcHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +19,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-@RestController
-@CrossOrigin("*")
+@Controller
 public class EstudianteController {
 
     @Autowired
@@ -31,8 +32,10 @@ public class EstudianteController {
     private PagoService pagoService;
 
     @GetMapping("/estudiantes")
-    public List<Estudiante> listarEstudiantes(){
-        return estudianteRepository.findAll();
+    public String listarEstudiantes(Model model){
+        List<Estudiante> estudiantes = estudianteRepository.findAll();
+        model.addAttribute("estudiantes", estudiantes);
+        return "estudiantes";  // Esta es la vista Thymeleaf (estudiantes.html)
     }
 
     @GetMapping("/estudiantes/{codigo}")
@@ -46,8 +49,10 @@ public class EstudianteController {
     }
 
     @GetMapping("/pagos")
-    public List<Pago> listarPagos(){
-        return pagoRepository.findAll();
+    public String listarPagos(Model model){
+        List<Pago> pagos = pagoRepository.findAll();
+        model.addAttribute("pagos", pagos);
+        return "pagos";  // Esta es la vista Thymeleaf (pagos.html)
     }
 
     @GetMapping("/pagos/{id}")
@@ -70,7 +75,7 @@ public class EstudianteController {
         return pagoRepository.findByType(type);
     }
 
-    @PutMapping("/pagos/{pagoId}/actualizarPago")
+    @PutMapping("/pagos/{pagoId}/actualizarStatusDePago")
     public Pago actualizarStatusDePago(@RequestParam PagoStatus status,@PathVariable Long pagoId){
         return pagoService.actualizarPagoPorStatus(status,pagoId);
     }

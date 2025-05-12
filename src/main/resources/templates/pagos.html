@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head"></head>
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="layout :: navbar"></div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container mt-5">
+    <h1>Lista de Pagos</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-dark-green">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Estudiante</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pago : ${pagos}">
+                <td th:text="${pago.id}"></td>
+                <td th:text="${pago.estudiante.nombre}"></td>
+                <td th:text="${pago.fecha}"></td>
+                <td th:text="${pago.cantidad}"></td>
+                <td th:text="${pago.type}"></td>
+                <td th:text="${pago.status}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<div th:replace="layout :: footer-scripts"></div>
+
+</body>
+</html>
